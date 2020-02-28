@@ -4,11 +4,13 @@ from .response.value import Value
 from .response.user import User
 from .response.top import Top
 from .response.rewards import Rewards
+from app import logger
 
 class Controller:
         
     @classmethod
     def return_interface(self, data):
+        logger.debug("In controller interface")
         if data.text.startswith("help"):
             return Help(data).response()
         elif data.text.startswith("me"):
@@ -22,5 +24,5 @@ class Controller:
         elif data.text.startswith("@"):
             return Appreciation(data).response()
 
-        unkown = Help(data).response()
+        unkown = Help(data).help()
         return f"Unknown Option Chosen. Here's help \n{unkown}"

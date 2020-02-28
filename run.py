@@ -1,4 +1,6 @@
-from app import app
+from app import app, logger
 
 if __name__ == '__main__':
-    app.run(port=app.config['PORT'], debug=True)
+    logger.info("Starting the application")
+    logger.debug("Application Configuration Options - %s", app.config)
+    app.run(host=app.config["APP_HOST"], port=app.config['APP_PORT'], debug=app.config['DEBUG'])

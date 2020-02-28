@@ -1,5 +1,5 @@
 from .base import Response
-from app import select_feed_user_query, make_plot, generate_md_table, select_feed_user_timebound
+from app import select_feed_user_query, make_plot, generate_md_table, select_feed_user_timebound, logger
 from app.utils import mm_wrapper
 import re, datetime
 from flask import make_response
@@ -14,6 +14,7 @@ class User(Response):
         self.transObj = data
     
     def check_format(self):
+        logger.debug("Checking format for user related queries")
         if self.transObj.text == "me stats":
             return True
         res_feed = REGEX_MESSAGE_PATTERN_FEED.match(self.transObj.text)
@@ -22,9 +23,21 @@ class User(Response):
         if res_points and res_points.span()[1] == len(self.transObj.text): return True
         return False
 
+    @classmethod
+    def help(self):
+        help_str = "Format for user related queries are as follows\n" + \
+            "1. `/umatter me stats` : \n This command let's you view statistics about yourself.\n" + \
+            "2. `/umatter me feed <channel_name>`: \nGives you the last 10 appreciation posts by and to you \n" + \
+            "3. `/umatter me points start_date end_date`: \n Gives you the appreciation points statistics in different channels received and given by you."
+        return help_str
+
     def user_stats(self):
+        logger.debug("In user statistics")
         query = select_feed_user_query(self.transObj.from_user_id)
-        res = self.transObj.execute_user_feed(query)
+        flag, res = self.transObj.execute_user_feed(query)
+        if not flag:
+            return "Internal Server Error has been detected. Please contact system admin"
+
         total_points_rvd = 0
         total_points_gvn = 0
         appr_posts_from_count = 0
@@ -32,6 +45,7 @@ class User(Response):
         channel_points = defaultdict(int)
         post_id_list = []
         total_appr_post_count = len(res)
+
         for i in res:
             channel_points[i["channel_name"]]+=1
             if i["from_user_name"] == self.transObj.from_user_name:
@@ -43,8 +57,9 @@ class User(Response):
             post_id_list.append(i["post_id"])
 
         mm_status, mm_res = mm_wrapper.get_reaction_bulk(post_id_list)
+
         if not mm_status:
-            return mm_res
+            return "Internal Server Error has been detected. Please contact system admin"
         
         emoji_dist = defaultdict(int)
         for k,v in mm_res.items():
@@ -95,12 +110,21 @@ class User(Response):
         return final_res
 
     def user_feed(self):
+        logger.debug("in User feed of user related queries")
         channel_name_grp = re.search('"(.+?)"', self.transObj.text)
         channel_name = None
         if channel_name_grp:
             channel_name = channel_name_grp.group(1)
+        else:
+            return "Not able to detect channel name. Please follow the correct format"
+
         query = select_feed_user_query(self.transObj.from_user_id, channel_name, 10, True)
-        res = self.transObj.execute_user_feed(query)
+
+        flag, res = self.transObj.execute_user_feed(query)
+
+        if not flag:
+            return "Internal Server Error has been detected. Please contact system admin"
+
         res_list = []
         for i in res:
             res_list.append((i["from_user_name"], i["to_user_name"], i["points"], i["channel_name"], i["message"]))
@@ -115,15 +139,23 @@ class User(Response):
         return final_res
 
     def user_points(self):
+        logger.debug("In User points for user related queries")
         split_text = self.transObj.text.split(" ")
         str_date2, str_date1 = split_text[-1], split_text[-2]
         date1 = datetime.datetime.strptime(str_date1, "%Y-%m-%d")
         date2 = datetime.datetime.strptime(str_date2, "%Y-%m-%d")
         if date1 >= date2:
-            return "To Date should be greater than From Date"
+            logger.warning("From Date greater than To Date")
+            return "> To Date should be greater than From Date"
+            
         query = select_feed_user_timebound(self.transObj.from_user_id, date1, date2)
-        res = self.transObj.execute_user_feed(query)
+        flag, res = self.transObj.execute_user_feed(query)
+
+        if not flag:
+            return "Internal Server Error has been detected. Please contact system admin"
+
         res_list = []
+
         for i in res:
             res_list.append((i["channel_name"], i["points"], i["from_user_name"], i["insertionTime"]))
         table = generate_md_table(res_list, ["Channel Name", "Points", "From Peer", "Timestamp"])
@@ -132,13 +164,18 @@ class User(Response):
                 "text": f"Your Points Distribution from {date1} to {date2} is as follows \n\n {table}"
             }]
         }
+
         final_res = make_response(result)
         final_res.headers["Content-Type"] = "application/json"
         return final_res
 
     def response(self):
-        if not self.check_format(): 
-            return "Format Incorrect for viewing about yourself. Follow the examples below: \n *hello*"
+        logger.debug("In response for user related queries")
+        if not self.check_format():
+            logger.warning("Invalid format for user related queries. Invalidating Request.")
+            return self.help()
+            # "Format Incorrect for viewing about yourself. Follow the examples below: \n *hello*"
+        
         first_split = self.transObj.text.split(" ")
         if first_split[1] == "stats":
             return self.user_stats()

@@ -4,7 +4,7 @@ from textwrap import wrap
 # from wand.drawing import Drawing
 # from wand.image import Image
 # from wand.font import Font
-from app import INSERT_QUERY_STRING, color_list, WEEKLY_THRESHOLD
+from app import INSERT_QUERY_STRING, color_list, WEEKLY_THRESHOLD, logger
 import os, requests, random
 import matplotlib
 from matplotlib import pyplot as plt
@@ -40,9 +40,13 @@ def generate_blob(text):
     return imgByteArr.getvalue()
 
 def download_image(link):
-    res = requests.get(link)
-    res.raise_for_status()
-    return res.content
+    try:
+        res = requests.get(link)
+        res.raise_for_status()
+        return True, res.content
+    except Exception as e:
+        logger.exception("Exception in downloading image")
+        return False, None
 
 def make_plot(label, size,title):
     fig, ax1 = plt.subplots()

@@ -1,4 +1,4 @@
-from app import mysql, build_insert_query
+from app import mysql, build_insert_query, logger
 
 class Transaction:
 
@@ -10,23 +10,35 @@ class Transaction:
         self.text = data["text"].strip()
 
     def execute_select_check_sum(self, query):
-        cursor = mysql.cursor()
-        cursor.execute(query)
-        return cursor.fetchone()["day_total"]
+        logger.debug("Running query %s for checking sum total points", query)
+        try:
+            cursor = mysql.cursor()
+            cursor.execute(query)
+            return True, cursor.fetchone()["day_total"]
+        except Exception as e:
+            logger.exception("Exception in getting the sum total for the day for the user.")
+            return False, None
 
     def execute_user_feed(self, query):
-        cursor = mysql.cursor()
-        cursor.execute(query)
-        return cursor.fetchall()
+        logger.debug("Executing query %s", query)
+        try:
+            cursor = mysql.cursor()
+            cursor.execute(query)
+            return True, cursor.fetchall()
+        except Exception as e:
+            logger.exception("Exception in running query %s", query)
+            return False, None
 
     def insert(self, data):
-        query = build_insert_query(data)
-        cursor = mysql.cursor()
-        res = cursor.execute(query)
-        if res == 0:
+        logger.debug("Inserting data to mysql")
+        try:
+            query = build_insert_query(data)
+            cursor = mysql.cursor()
+            cursor.execute(query)
+            # if res == 0:
+            #     return False
+            mysql.commit()
+            return True
+        except Exception as e:
+            logger.exception("Exception in inserting data to the mysql server")
             return False
-        mysql.commit()
-        return True
-
-    def select(self, query):
-        pass
