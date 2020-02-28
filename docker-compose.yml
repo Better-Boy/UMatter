@@ -1,0 +1,12 @@
+version: "3"
+services:
+    db:
+        container_name: umatter-db
+        build: db
+    app:
+        container_name: api
+        build: .
+        ports: 
+            - 5000:5000
+        depends_on:
+            - db

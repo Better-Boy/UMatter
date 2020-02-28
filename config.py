@@ -6,7 +6,7 @@ class BaseConfig:
     # Flask Settings
     APP_NAME = "u-matter rest service"
     APP_PORT = 5000
-    APP_HOST = "localhost"
+    APP_HOST = "0.0.0.0"
     DEBUG = True
 
     # Mysql Settings 
@@ -33,8 +33,22 @@ class ProductionConfig(BaseConfig):
     """
     Production configurations
     """
-    PORT = 80
+    APP_PORT = 80
+    APP_HOST = "0.0.0.0"
     DEBUG = False
+
+    MYSQL_HOST = "db"
+    MYSQL_USER = "root"
+    MYSQL_PASSWORD = "root"
+    MYSQL_DB = "umatter"
+    MYSQL_PORT = 3306
+    
+    MM_SCHEME = "http"
+    MM_URL = "host.docker.internal"
+    MM_PORT = 8065
+    MM_BOT_TOKEN = "wwgqj7p89t8zbqwsmd6nfg4srw"
+    MM_SLASH_TOKEN = "aax8t67esirpjmegijtqx1puae"
+    WEEKLY_THRESHOLD = 5
 
 class DevelopmentConfig(BaseConfig):
     """
@@ -43,14 +57,14 @@ class DevelopmentConfig(BaseConfig):
     APP_PORT = 5000
     DEBUG = True
 
-    MYSQL_HOST = "127.0.0.1"
+    MYSQL_HOST = "db"
     MYSQL_USER = "root"
-    MYSQL_PASSWORD = ""
+    MYSQL_PASSWORD = "root"
     MYSQL_DB = "umatter"
     MYSQL_PORT = 3306
     
     MM_SCHEME = "http"
-    MM_URL = "localhost"
+    MM_URL = "host.docker.internal"
     MM_PORT = 8065
     MM_BOT_TOKEN = "wwgqj7p89t8zbqwsmd6nfg4srw"
     MM_SLASH_TOKEN = "aax8t67esirpjmegijtqx1puae"
@@ -63,7 +77,7 @@ class TestingConfig(BaseConfig):
 
 
 app_config = {  
-    'default': ProductionConfig,   
+    'default': ProductionConfig,
     'production': ProductionConfig,
     'development': DevelopmentConfig,
     'testing': TestingConfig,
