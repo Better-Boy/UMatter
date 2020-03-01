@@ -13,6 +13,8 @@ This is a submission to Mattermost Hackathon.
 Hackathon Proposal can be found here - [Proposal](documentation/ppt.pptx)
 
 ## Features:
+(Click on the feature for more info)
+
 * [**Give Appreciation**](documentation/features/appreciation.md) - Quickly give appreciation to the user right there in the channel itself.
 * [**Create a Company Value**](documentation/features/value.md) - Create a company value as an emoji and tag to the appreciation posts 
 * [**Top Peers**](documentation/features/top.md) - Users can see top performing teammates in their respective channels wrt to a date range
