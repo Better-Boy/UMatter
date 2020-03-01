@@ -4,7 +4,7 @@ services:
         container_name: umatter-db
         build: db
     app:
-        container_name: api
+        container_name: flask-service
         build: .
         ports: 
             - 5000:5000

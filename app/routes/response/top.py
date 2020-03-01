@@ -1,7 +1,7 @@
 from .base import Response
 from app.utils import mm_wrapper
 from flask import make_response
-from app import select_feed_channel, generate_md_table, logger
+from app import select_feed_channel, generate_md_table, logger, WEEKLY_THRESHOLD
 import re, datetime
 
 REGEX_TOP_POINTS = re.compile(r"top peers ([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])) ([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))")
@@ -36,7 +36,7 @@ class Top(Response):
     def response(self):
         if not self.check_format():
             logger.warning("Invalid format. Invalidating request")
-            return self.help()
+            return "Invalid Format \n" + self.help()
 
         if self.check_private_chat():
             logger.warning("Request from a private chat. Invalidating request")
@@ -56,8 +56,9 @@ class Top(Response):
             query = select_feed_channel(self.transObj.channel_id, date1, date2, is_week=True)
         else:
             query = select_feed_channel(self.transObj.channel_id, date1, date2)
-        flag, res = self.transObj.execute_user_feed(query)
-        if not flag:
+        
+        res_flag, res = self.transObj.execute_user_feed(query)
+        if not res_flag:
             return "Internal Server Error. Please contact System admin"
             
         res_list = []
@@ -70,10 +71,16 @@ class Top(Response):
                 res_list.append((":3rd_place_medal:",i["to_user_name"], i["sum_total"]))
             elif flag:
                 res_list.append((":star:",i["to_user_name"], i["sum_total"]))
+
         table = generate_md_table(res_list, ["Medal", "Peer Name", "Points Total"])
+        if flag:
+            text_msg = f"Top Peers Distribution for the channel **{self.transObj.channel_name}** who have cumulative sum of points greater than **{WEEKLY_THRESHOLD}** (weekly threshold), from **{str_date1}** to **{str_date2}** is as follows \n\n {table}"
+        else:
+            text_msg = f"Top Peers Distribution for the channel **{self.transObj.channel_name}** from **{str_date1}** to **{str_date2}** is as follows \n\n {table}"
+
         result = {
             "attachments":[{
-                "text": f"Top Peers Distribution for the channel **{self.transObj.channel_name}** from **{str_date1}** to **{str_date2}** is as follows \n\n {table}"
+                "text": text_msg
             }]
         }
         final_res = make_response(result)

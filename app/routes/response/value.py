@@ -20,9 +20,9 @@ class Value(Response):
     @classmethod
     def help(self):
         help_str = "Format for adding a value is as follows\n" + \
-                   "`/umatter value add value_name <image_url>`\n" + \
+                   "`/umatter value add \"value_name\" <image_url>`\n" + \
                        "Ensure no special characters other than dot(.), dash(-), underscore(-) are in the value name. Supported image urls should end in png, jpg, jpeg, gif.\n" + \
-                           "For ex. `/umatter value add consistency http://<image_url>.png"
+                           "For ex. `/umatter value add \"consistency\" http://<image_url>.png`"
         return help_str
     
     def add_value(self):

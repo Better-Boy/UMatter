@@ -4,7 +4,7 @@ from flask import Flask
 from config import app_config
 from .utils.mattermostdriver import Driver
 
-config_name = os.getenv('FLASK_CONFIG', 'development')
+config_name = os.getenv('FLASK_CONFIG', 'default')
 
 app = Flask(__name__)
 

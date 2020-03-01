@@ -10,4 +10,5 @@ COPY run.py /app
 
 RUN pip install -r requirements.txt
 EXPOSE 5000
+RUN sleep 5
 CMD python run.py

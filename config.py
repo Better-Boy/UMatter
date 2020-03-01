@@ -23,8 +23,8 @@ class BaseConfig:
     MM_SCHEME = "http"
     MM_URL = "localhost"
     MM_PORT = 8065
-    MM_TOKEN = ""
-    MM_VERIFICATION_TOKEN = ""
+    MM_BOT_TOKEN = ""
+    MM_SLASH_TOKEN = ""
 
     # LOG FILE PATH
     LOG_FILE_PATH = "event_logs.log"
@@ -33,7 +33,7 @@ class ProductionConfig(BaseConfig):
     """
     Production configurations
     """
-    APP_PORT = 80
+    APP_PORT = 5000
     APP_HOST = "0.0.0.0"
     DEBUG = False
 
@@ -48,7 +48,7 @@ class ProductionConfig(BaseConfig):
     MM_PORT = 8065
     MM_BOT_TOKEN = "wwgqj7p89t8zbqwsmd6nfg4srw"
     MM_SLASH_TOKEN = "aax8t67esirpjmegijtqx1puae"
-    WEEKLY_THRESHOLD = 5
+    WEEKLY_THRESHOLD = 40
 
 class DevelopmentConfig(BaseConfig):
     """
@@ -57,14 +57,14 @@ class DevelopmentConfig(BaseConfig):
     APP_PORT = 5000
     DEBUG = True
 
-    MYSQL_HOST = "db"
+    MYSQL_HOST = "localhost"
     MYSQL_USER = "root"
     MYSQL_PASSWORD = "root"
     MYSQL_DB = "umatter"
     MYSQL_PORT = 3306
     
     MM_SCHEME = "http"
-    MM_URL = "host.docker.internal"
+    MM_URL = "localhost"
     MM_PORT = 8065
     MM_BOT_TOKEN = "wwgqj7p89t8zbqwsmd6nfg4srw"
     MM_SLASH_TOKEN = "aax8t67esirpjmegijtqx1puae"

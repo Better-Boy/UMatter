@@ -27,7 +27,7 @@ class User(Response):
     def help(self):
         help_str = "Format for user related queries are as follows\n" + \
             "1. `/umatter me stats` : \n This command let's you view statistics about yourself.\n" + \
-            "2. `/umatter me feed <channel_name>`: \nGives you the last 10 appreciation posts by and to you \n" + \
+            "2. `/umatter me feed \"<channel_name>\"`: \nGives you the last 10 appreciation posts by and to you \n" + \
             "3. `/umatter me points start_date end_date`: \n Gives you the appreciation points statistics in different channels received and given by you."
         return help_str
 
@@ -66,24 +66,19 @@ class User(Response):
             for i in v:
                 k = i["emoji_name"]
                 emoji_dist[f":{k}: {k}"] += 1
-        
-        # cp_plot_byte = make_plot(list(channel_points.keys()), list(channel_points.values()), "Points Channel Distribution")
-        # file_id_channel = mm_wrapper.upload_file(self.transObj.channel_id, cp_plot_byte)
-        # ed_plot_byte = make_plot(list(emoji_dist.keys()), list(emoji_dist.values()), "Emoji Count Distribution")
-        # file_id_emoji = mm_wrapper.upload_file(self.transObj.channel_id, ed_plot_byte)
 
-        cp_table = generate_md_table(channel_points.items(), ["Channel Name", "Points"])
+        cp_table = generate_md_table(channel_points.items(), ["Channel Name", "Frequency of posts by or to you"])
         ed_table = generate_md_table(emoji_dist.items(), ["Emoji Name", "Frequency Tagged"])
         res = {
             "attachments":[{
-                "text": f"### **Channel Points** \n\n {cp_table} \n\n ### **Emoji Distribution** \n\n {ed_table}",
+                "text": f"### **Channel Posts** \n\n Number of appreciation posts where you are tagged \n\n  {cp_table} \n\n ### **Emoji Distribution** \n\n Emojis tagged to the appreciation posts by or to you \n\n{ed_table}",
                 "fields":[{
                     "short":True,
                     "title":"User Name",
                     "value": self.transObj.from_user_name
                 },{
                     "short":True,
-                    "title":"Total Appreciation Posts",
+                    "title":"Total Appreciation Posts (by and to you)",
                     "value": str(total_appr_post_count)
                 },
                 {
@@ -96,11 +91,11 @@ class User(Response):
                     "value": str(total_points_gvn)
                 },{
                     "short":True,
-                    "title":"Total Appreciation by you",
+                    "title":"Total Appreciation Posts by you",
                     "value": str(appr_posts_from_count)
                 },{
                     "short":True,
-                    "title":"Total Appreciation to you",
+                    "title":"Total Appreciation Posts to you",
                     "value": str(appr_posts_to_count)
                 }]
             }]

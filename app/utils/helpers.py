@@ -19,11 +19,6 @@ matplotlib.use('agg')
 dir_path = os.path.dirname(os.path.realpath(__file__))
 FONT_PATH = os.path.join(os.path.abspath(os.path.join(dir_path, os.pardir)), 'resources/CANDY.TTF')
 IMAGE_PATH = os.path.join(os.path.abspath(os.path.join(dir_path, os.pardir)), 'resources/star.png')
-
-pattern = Image.open(IMAGE_PATH, "r").convert('RGBA')
-wrapper = textwrap.TextWrapper(width=20)
-size = width, height = pattern.size
-draw = ImageDraw.Draw(pattern, 'RGBA')
 font = ImageFont.truetype(FONT_PATH, 150)
 
 # def generate_blob(text):
@@ -33,6 +28,9 @@ font = ImageFont.truetype(FONT_PATH, 150)
 # , fill=(0,0,0,0)
 
 def generate_blob(text):
+    pattern = Image.open(IMAGE_PATH, "r").convert('RGBA')
+    wrapper = textwrap.TextWrapper(width=20)
+    draw = ImageDraw.Draw(pattern, 'RGBA')
     word_list = wrapper.wrap(text=text) 
     draw.text((600,800), '\n'.join(word_list), fill=(191, 63, 63), font=font)
     imgByteArr = BytesIO()
@@ -83,6 +81,10 @@ def select_feed_user_timebound(user_id, start_date, end_date):
 
 def select_feed_channel(channel_id, start_date, end_date, is_week=False):
     query_string = f'select to_user_name, sum(points) as sum_total, RANK() OVER(order by sum(points) desc) from transaction where channel_id="{channel_id}" and date(insertionTime) >= "{start_date}" and date(insertionTime) <= "{end_date}" group by to_user_name {"having sum_total > " + str(WEEKLY_THRESHOLD) if is_week else "" } order by sum_total desc;'
+    return query_string
+
+def select_feed_channel_stats(channel_id, start_date, end_date):
+    query_string = f'select * from transaction where channel_id="{channel_id}" and date(insertionTime) >= "{start_date}" and date(insertionTime) <= "{end_date}";'
     return query_string
 
 def generate_md_table(data, headers):

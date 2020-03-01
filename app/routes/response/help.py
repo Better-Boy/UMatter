@@ -4,6 +4,7 @@ from .appreciation import Appreciation
 from .top import Top
 from .user import User
 from .value import Value
+from .channel import Channel
 
 REGEX_MESSAGE_PATTERN = "help"
 
@@ -18,6 +19,7 @@ class Help(Response):
         help_str += "**Top Peers in the channel** \n" + Top.help() + "\n"
         help_str += "**Statistics about yourself** \n" + User.help() + "\n\n"
         help_str += "**Adding a company value** \n" + Value.help() + "\n"
+        help_str += "**Seeing the statistics of a Channel** \n" + Channel.help() + "\n"
         return help_str
 
     def check_format(self):
