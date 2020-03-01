@@ -16,7 +16,7 @@ Hackathon Proposal can be found here - [Proposal](documentation/ppt.pptx)
 * [**Give Appreciation**](documentation/features/appreciation.md) - Quickly give appreciation to the user right there in the channel itself.
 * [**Create a Company Value**](documentation/features/value.md) - Create a company value as an emoji and tag to the appreciation posts 
 * [**Top Peers**](documentation/features/top.md) - Users can see top performing teammates in their respective channels wrt to a date range
-* [**Self Statistics**]((documentation/features/user.md)) - See the statistics about yourself
+* [**Self Statistics**](documentation/features/user.md) - See the statistics about yourself
 * [**Channel Statistics**](documentation/features/channel.md) - See the statistics in a public/private channel
 
 ## Development:
