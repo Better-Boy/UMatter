@@ -2,7 +2,7 @@
 
 Every user needs to know about his points. 
 
-Format for user related queries are as follows
+Format for user related queries are as follows  
 `/umatter me stats` :  
 This command let's you view statistics about yourself.  
 Statistics information are as follows:  
