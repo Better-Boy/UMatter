@@ -12,6 +12,8 @@ This is a submission to Mattermost Hackathon.
 
 Hackathon Proposal can be found here - [Proposal](documentation/ppt.pptx)
 
+Note: One change in the proposal -  Negative points are not implemented. After some thinking, awarding negative points is a bad way of communication. Hence, this feature was not implemented.
+
 ## Features:
 (Click on the feature for more info)
 
