@@ -5,6 +5,7 @@ PyMySQL==0.9.3
 pytablewriter==0.49.0
 requests==2.22.0
 tabledata==0.10.3
+cryptography==2.6.1
 Werkzeug==1.0.0
 websockets
 waitress
