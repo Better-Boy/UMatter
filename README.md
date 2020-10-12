@@ -31,6 +31,8 @@ This is the ***manual way*** of setting up the environment and the app
 
 * **Programming Language:** Python 3.7
 * **Database:** MySQL 8.0
+* Create a database by name - "umatter"
+* Run the script in `db/init.sql`
 * **Mattermost Version:** v5.20
 * **Virtual Environment**
   * Create an anaconda environment. 
