@@ -1,12 +1,21 @@
 version: "3"
 services:
-    db:
-        container_name: umatter-db
-        build: db
     app:
         container_name: flask-service
         build: .
-        ports: 
+        restart: on-failure
+        ports:
             - 5000:5000
         depends_on:
             - db
+    db:
+        container_name: umatter-db
+        image: mysql
+        restart: always
+        ports:
+            - '8000:5000'
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: umatter
+        volumes:
+            - ./db:/docker-entrypoint-initdb.d/:ro

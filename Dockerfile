@@ -1,14 +1,10 @@
-FROM python:3.7
-LABEL maintainer="Abhilash K R"
+FROM python:3.8-slim
 
+RUN mkdir /app
 WORKDIR /app
-
-COPY requirements.txt /app
-ADD app /app/app
-COPY config.py /app
-COPY run.py /app
-
-RUN pip install -r requirements.txt
+ADD requirements.txt /app
+RUN pip3 install -r requirements.txt
+ADD . /app
 EXPOSE 5000
-RUN sleep 5
-CMD python run.py
+RUN chmod +x ./entrypoint.sh
+ENTRYPOINT ["sh", "entrypoint.sh"]
