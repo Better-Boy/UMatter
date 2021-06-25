@@ -12,6 +12,13 @@ class Posts(Base):
 			self.endpoint,
 			data=options
 		)
+	
+	def create_file_post(self, options, file_):
+		return self.client.post(
+			self.endpoint,
+			data=options,
+			files={'file': ('report.csv', open(file_, 'r').read())}
+		)
 
 	def create_ephemeral_post(self, options):
 		return self.client.post(

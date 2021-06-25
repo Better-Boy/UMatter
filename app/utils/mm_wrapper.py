@@ -26,6 +26,19 @@ def upload_file(channel_id, blob):
         logger.exception("Exception in uploading file to mattermost server")
         return False, None
 
+def upload_csv(channel_id, file_):
+    logger.debug("in uploading file")
+    try:
+        form_data = {
+            "channel_id": ('', channel_id),
+            "files": (file_, open(file_, 'rb')),
+        }
+        upload_file_reply = mm_client.files.upload_file(form_data)
+        return True, upload_file_reply["file_infos"][0]["id"]
+    except Exception as e:
+        logger.exception("Exception in uploading file to mattermost server")
+        return False, None
+
 def create_post(text, file_id, channel_id):
     logger.debug("Creating post")
     try:
