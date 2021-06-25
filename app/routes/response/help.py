@@ -1,5 +1,7 @@
+from .orgtop import OrgTop
 from .base import Response
 from app import logger
+from .feedgiven import FeedGiven
 from .appreciation import Appreciation
 from .top import Top
 from .user import User
@@ -20,6 +22,8 @@ class Help(Response):
         help_str += "**Statistics about yourself** \n" + User.help() + "\n\n"
         help_str += "**Adding a company value** \n" + Value.help() + "\n"
         help_str += "**Seeing the statistics of a Channel** \n" + Channel.help() + "\n"
+        help_str += "**Seeing the statistics of a Organization** \n" + OrgTop.help() + "\n"
+        help_str += "**Getting report for posts given by individuals** \n" + FeedGiven.help() + "\n"
         return help_str
 
     def check_format(self):

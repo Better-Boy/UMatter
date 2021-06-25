@@ -83,6 +83,14 @@ def select_feed_channel(channel_id, start_date, end_date, is_week=False):
     query_string = f'select to_user_name, sum(points) as sum_total, RANK() OVER(order by sum(points) desc) from transaction where channel_id="{channel_id}" and date(insertionTime) >= "{start_date}" and date(insertionTime) <= "{end_date}" group by to_user_name {"having sum_total > " + str(WEEKLY_THRESHOLD) if is_week else "" } order by sum_total desc;'
     return query_string
 
+def select_feed_organization(start_date, end_date, is_week=False):
+    query_string = f'select to_user_name, A.given_count as given_count, count(to_user_name) as received_count, sum(points) as sum_total, RANK() OVER(order by sum(points) desc) from transaction left join (select from_user_name, count(*) as given_count from transaction group by from_user_name) A on transaction.to_user_name =  A.from_user_name where date(insertionTime) >= "{start_date}" and date(insertionTime) <= "{end_date}" group by to_user_name {"having sum_total > " + str(WEEKLY_THRESHOLD) if is_week else "" } order by sum_total desc;'
+    return query_string
+
+def select_feed_given(start_date, end_date, is_week=False):
+    query_string = f'select from_user_name, count(from_user_name) as given_count, sum(points) as sum_total from transaction where date(insertionTime) >= "{start_date}" and date(insertionTime) <= "{end_date}" group by from_user_name order by sum_total desc;'
+    return query_string
+
 def select_feed_channel_stats(channel_id, start_date, end_date):
     query_string = f'select * from transaction where channel_id="{channel_id}" and date(insertionTime) >= "{start_date}" and date(insertionTime) <= "{end_date}";'
     return query_string
@@ -90,6 +98,6 @@ def select_feed_channel_stats(channel_id, start_date, end_date):
 def generate_md_table(data, headers):
     writer = MarkdownTableWriter()
     writer.headers = headers
-    writer.column_styles = [Style(align="center", font_weight="bold")] * len(headers)
+    # writer.column_styles = [Style(align="center", font_weight="bold")] * len(headers)
     writer.value_matrix = data
     return writer.dumps()
